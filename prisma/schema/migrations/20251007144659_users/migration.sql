@@ -1,15 +1,16 @@
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('PATIENT', 'DOCTOR', 'ADMIN');
+CREATE TYPE "UserRole" AS ENUM ('PATIENT', 'ADMIN', 'DOCTOR');
 
 -- CreateEnum
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'INACTIVE', 'DELETED');
 
 -- CreateEnum
-CREATE TYPE "Gender" AS ENUM ('MALE', 'FEMALE');
+CREATE TYPE "UserGender" AS ENUM ('MALE', 'FEMALE');
 
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" "UserRole" NOT NULL DEFAULT 'PATIENT',
@@ -45,7 +46,7 @@ CREATE TABLE "doctors" (
     "address" TEXT NOT NULL,
     "registrationNumber" TEXT NOT NULL,
     "experience" INTEGER NOT NULL DEFAULT 0,
-    "gender" "Gender" NOT NULL,
+    "gender" "UserGender" NOT NULL,
     "appointmentFee" INTEGER NOT NULL,
     "qualification" TEXT NOT NULL,
     "currentWorkingPlace" TEXT NOT NULL,
