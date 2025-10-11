@@ -1,6 +1,5 @@
 model User{
      id    String     @id @default(uuid())
-     name String
      email String    @unique
      password String
      role UserRole @default(PATIENT)
@@ -62,7 +61,7 @@ model Patient {
     email        String   @unique
     name         String
     profilePhoto String?
-    address      String
+    address      String?
     isDeleted    Boolean  @default(false)
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
