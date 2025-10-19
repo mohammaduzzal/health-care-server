@@ -10,9 +10,13 @@ router.get("/",
     checkAuth(UserRole.ADMIN,UserRole.DOCTOR),
      ScheduleController.getScheduleForDoctor)
 
-router.post("/", ScheduleController.createSchedule)
+router.post("/",
+    checkAuth(UserRole.ADMIN),
+     ScheduleController.createSchedule)
 
-router.delete("/:id", ScheduleController.deleteScheduleFromDb)
+router.delete("/:id",
+    checkAuth(UserRole.ADMIN),
+     ScheduleController.deleteScheduleFromDb)
 
 
 export const scheduleRoutes = router;
