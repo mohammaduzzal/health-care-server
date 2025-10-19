@@ -7,8 +7,12 @@ router.get(
     DoctorController.getAllFromDB
 )
 
+router.post("/suggestion", DoctorController.getAiSuggestions)
+
 router.patch(
     "/:id",
     DoctorController.updateIntoDB
 )
+
+
 export const doctorRoutes = router;

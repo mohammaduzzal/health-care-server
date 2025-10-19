@@ -1,4 +1,3 @@
-import { IJWTPayload } from "../../types/common";
 import pick from "../../helper/pick";
 import sendResponse from "../../shared/sendResponse";
 import { doctorFilterableFields } from "./doctor.constant";
@@ -36,7 +35,21 @@ const updateIntoDB = catchAsync(async (req: Request, res: Response) => {
 })
 
 
+const getAiSuggestions = catchAsync(async (req: Request, res: Response) => {
+
+    const result = await DoctorService.getAiSuggestions(req.body);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Ai suggestions fetched successfully!",
+        data: result
+    })
+})
+
+
 export const DoctorController = {
     getAllFromDB,
-    updateIntoDB
+    updateIntoDB,
+    getAiSuggestions
 }
