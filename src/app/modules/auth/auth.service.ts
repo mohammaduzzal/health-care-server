@@ -3,6 +3,8 @@ import config from "../../../config";
 import { prisma } from "../../shared/prisma";
 import bcrypt from "bcryptjs";
 import { jwtHelper } from "../../helper/jwtHelper";
+import ApiError from "../../errors/ApiError";
+import httpStatus from "http-status"
 
 
 const login = async(payload : {email :string,password :string}) =>{
@@ -18,7 +20,7 @@ const login = async(payload : {email :string,password :string}) =>{
     const isPasswordMatched = await bcrypt.compare(payload.password, user.password)
 
     if(!isPasswordMatched){
-        throw new Error("password incorrect")
+        throw new ApiError(httpStatus.BAD_REQUEST,"password incorrect")
     }
 
     // token generate
