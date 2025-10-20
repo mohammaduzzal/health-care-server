@@ -1,4 +1,4 @@
-import { Doctor, Prisma } from "@prisma/client";
+import { Doctor, Prisma, UserStatus } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper"
 import { doctorSearchableFields } from "./doctor.constant";
 import { prisma } from "../../shared/prisma";
@@ -83,7 +83,7 @@ const getAllFromDB = async (fillters: any, options: IOptions) => {
         },
         data: result
     }
-}
+};
 
 
 const updateIntoDB = async (id: string, payload: Partial<IDoctorUpdateInput>) => {
@@ -145,7 +145,7 @@ const updateIntoDB = async (id: string, payload: Partial<IDoctorUpdateInput>) =>
     })
 
 
-}
+};
 
 
 const getByIdFromDB = async (id: string): Promise<Doctor | null> => {
@@ -169,6 +169,48 @@ const getByIdFromDB = async (id: string): Promise<Doctor | null> => {
     });
     return result;
 };
+
+
+const deleteFromDB = async (id: string): Promise<Doctor> => {
+    return await prisma.$transaction(async (transactionClient) => {
+        const deleteDoctor = await transactionClient.doctor.delete({
+            where: {
+                id,
+            },
+        });
+
+        await transactionClient.user.delete({
+            where: {
+                email: deleteDoctor.email,
+            },
+        });
+
+        return deleteDoctor;
+    });
+};
+
+const softDelete = async (id: string): Promise<Doctor> => {
+    return await prisma.$transaction(async (transactionClient) => {
+        const deleteDoctor = await transactionClient.doctor.update({
+            where: { id },
+            data: {
+                isDeleted: true,
+            },
+        });
+
+        await transactionClient.user.update({
+            where: {
+                email: deleteDoctor.email,
+            },
+            data: {
+                status: UserStatus.DELETED,
+            },
+        });
+
+        return deleteDoctor;
+    });
+};
+
 
 
 const getAiSuggestions = async (payload: { symptomes: string }) => {
@@ -224,11 +266,13 @@ Return your response in JSON format with full individual doctor data.
     //  console.log(completion.choices[0].message);
 
     return result;
-}
+};
 
 export const DoctorService = {
     getAllFromDB,
     updateIntoDB,
     getByIdFromDB,
+    deleteFromDB,
+    softDelete,
     getAiSuggestions
 }
