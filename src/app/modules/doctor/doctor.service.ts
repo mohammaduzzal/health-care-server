@@ -147,6 +147,30 @@ const updateIntoDB = async (id: string, payload: Partial<IDoctorUpdateInput>) =>
 
 }
 
+
+const getByIdFromDB = async (id: string): Promise<Doctor | null> => {
+    const result = await prisma.doctor.findUnique({
+        where: {
+            id,
+            isDeleted: false,
+        },
+        include: {
+            doctorSpecialties: {
+                include: {
+                    specialities: true,
+                },
+            },
+            doctorSchedules: {
+                include: {
+                    schedule: true
+                }
+            }
+        },
+    });
+    return result;
+};
+
+
 const getAiSuggestions = async (payload: { symptomes: string }) => {
 
     if (!(payload && payload.symptomes)) {
@@ -205,5 +229,6 @@ Return your response in JSON format with full individual doctor data.
 export const DoctorService = {
     getAllFromDB,
     updateIntoDB,
+    getByIdFromDB,
     getAiSuggestions
 }
