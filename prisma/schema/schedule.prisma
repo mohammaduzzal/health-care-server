@@ -6,6 +6,8 @@ model Schedule{
     updatedAt           DateTime @updatedAt
     doctorSchedules  DoctorSchedules[]
 
+    appoinments Appoinment[]
+
     @@map("schedules")
 
 }
