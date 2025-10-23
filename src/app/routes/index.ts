@@ -6,6 +6,8 @@ import { doctorScheduleRoutes } from '../modules/doctorSchedule/doctorSchedule.r
 import { specialtiesRoutes } from '../modules/specialties/specialties.routes';
 import { doctorRoutes } from '../modules/doctor/doctor.routes';
 import { appoinmentRoutes } from '../modules/appoinment/appoinment.routes';
+import { PatientRoutes } from '../modules/patient/patient.routes';
+import { PrescriptionRoutes } from '../modules/prescription/prescription.routes';
 
 
 
@@ -39,6 +41,14 @@ const moduleRoutes = [
     {
         path: '/appoinment',
         route: appoinmentRoutes
+    },
+    {
+        path: '/patient',
+        route: PatientRoutes
+    },
+    {
+        path: '/prescription',
+        route: PrescriptionRoutes
     },
 ];
 
