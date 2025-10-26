@@ -4,6 +4,7 @@ import { UserService } from "./user.service";
 import sendResponse from "../../shared/sendResponse";
 import pick from "../../helper/pick";
 import { userFilterableFields } from "./user.constant";
+import { IJWTPayload } from "../../types/common";
 
 const createPatient = catchAsync(async(req : Request, res : Response) =>{
 
@@ -45,6 +46,7 @@ console.log(result)
 })
 
 
+
 const getAllUsers = catchAsync(async(req : Request, res : Response) =>{
     
     const filters = pick(req.query, userFilterableFields)
@@ -63,10 +65,41 @@ const getAllUsers = catchAsync(async(req : Request, res : Response) =>{
 })
 
 
+const getMyProfile = catchAsync(async(req : Request & {user?: IJWTPayload}, res : Response) =>{
+    
+    const user = req.user
+    const result = await UserService.getMyProfile(user as IJWTPayload)
+    
+
+    sendResponse(res,{
+        statusCode : 200,
+        success : true,
+        message : "your profile retrieved successfully",
+        data : result
+    })
+})
+
+
+const changeProfileStatus = catchAsync(async(req : Request, res : Response) =>{
+    
+    const {id} = req.params
+    const result = await UserService.changeProfileStatus(id,req.body)
+    
+
+    sendResponse(res,{
+        statusCode : 200,
+        success : true,
+        message : "profile updated successfully",
+        data : result
+    })
+})
+
 
 export const UserController ={
     createPatient,
     createDoctor,
     createAdmin,
-    getAllUsers
+    getAllUsers,
+    getMyProfile,
+    changeProfileStatus
 }

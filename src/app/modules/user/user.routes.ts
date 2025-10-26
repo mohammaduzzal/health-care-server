@@ -11,7 +11,13 @@ const router = express.Router()
 
 router.get("/",
     checkAuth(UserRole.ADMIN),
-    UserController.getAllUsers)
+    UserController.getAllUsers
+)
+
+router.get("/me",
+    checkAuth(UserRole.ADMIN, UserRole.DOCTOR, UserRole.PATIENT),
+    UserController.getMyProfile
+)
 
 
 router.post("/create-patient",
@@ -39,6 +45,12 @@ router.post("/create-admin",
         req.body = UserValidation.createAdminValidationSchema.parse(JSON.parse(req.body.data))
         UserController.createAdmin(req, res, next)
     }
+)
+
+router.patch(
+    "/:id/status",
+    checkAuth(UserRole.ADMIN),
+    UserController.changeProfileStatus
 )
 
 export const userRoutes = router
