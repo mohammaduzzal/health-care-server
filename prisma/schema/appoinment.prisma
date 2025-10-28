@@ -75,7 +75,7 @@ model Review {
     doctorId      String
     doctor        Doctor      @relation(fields: [doctorId], references: [id])
     appointmentId String      @unique
-    appointment   Appoinment @relation(fields: [appointmentId], references: [id])
+    appointment   Appoinment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
     rating        Int
     comment       String?
     createdAt     DateTime    @default(now())
