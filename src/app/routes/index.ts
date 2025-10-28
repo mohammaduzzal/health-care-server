@@ -9,6 +9,7 @@ import { appoinmentRoutes } from '../modules/appoinment/appoinment.routes';
 import { PatientRoutes } from '../modules/patient/patient.routes';
 import { PrescriptionRoutes } from '../modules/prescription/prescription.routes';
 import { reviewRoutes } from '../modules/review/review.routes';
+import { metaRoutes } from '../modules/meta/meta.routes';
 
 
 
@@ -54,6 +55,10 @@ const moduleRoutes = [
     {
         path: '/review',
         route: reviewRoutes
+    },
+    {
+        path: '/meta',
+        route: metaRoutes
     },
 ];
 

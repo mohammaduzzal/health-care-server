@@ -1,8 +1,9 @@
-import { Review } from "@prisma/client";
+import { Prisma, Review } from "@prisma/client";
 import { IJWTPayload } from "../../types/common";
 import { prisma } from "../../shared/prisma";
 import ApiError from "../../errors/ApiError";
 import httpStatus  from "http-status";
+import { IOptions, paginationHelper } from "../../helper/paginationHelper";
 
 const insertIntoDB = async(user : IJWTPayload, payload :Partial<Review> ) =>{
 
@@ -32,7 +33,7 @@ const insertIntoDB = async(user : IJWTPayload, payload :Partial<Review> ) =>{
             appointmentId : appointmentData.id,
             doctorId : appointmentData.doctorId,
             patientId : appointmentData.patientId,
-            rating : payload.rating as number,
+            rating : Number(payload.rating ),
             comment : payload.comment
         }
     })
@@ -64,6 +65,66 @@ const insertIntoDB = async(user : IJWTPayload, payload :Partial<Review> ) =>{
 
 }
 
+
+const getAllFromDB = async (
+    filters: any,
+    options: IOptions,
+) => {
+    const { limit, page, skip } = paginationHelper.calculatePagination(options);
+    const { patientEmail, doctorEmail } = filters;
+    const andConditions = [];
+
+    if (patientEmail) {
+        andConditions.push({
+            patient: {
+                email: patientEmail
+            }
+        })
+    }
+
+    if (doctorEmail) {
+        andConditions.push({
+            doctor: {
+                email: doctorEmail
+            }
+        })
+    }
+
+    const whereConditions: Prisma.ReviewWhereInput =
+        andConditions.length > 0 ? { AND: andConditions } : {};
+
+    const result = await prisma.review.findMany({
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy:
+            options.sortby && options.sortOrder
+                ? { [options.sortby]: options.sortOrder }
+                : {
+                    createdAt: 'desc',
+                },
+        include: {
+            doctor: true,
+            patient: true,
+            //appointment: true,
+        },
+    });
+    const total = await prisma.review.count({
+        where: whereConditions,
+    });
+
+    return {
+        meta: {
+            total,
+            page,
+            limit,
+        },
+        data: result,
+    };
+};
+
+
 export const ReviewService = {
-    insertIntoDB
+    insertIntoDB,
+    getAllFromDB
 }
